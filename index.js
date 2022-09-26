@@ -46,15 +46,14 @@ const run = async()=> {
         const docs = {
             $set:{
                 email:data.email,
-                name:data.name,
-               
+                // name:data.name,
             }
         }
 
         const result = await userCollection.updateOne(query,docs,options)
         const token = jwt.sign({ email:email }, process.env.JWT_SECRET);
         console.log(result);
-        res.send({result,token})
+        res.send({result, token})
     })
 
     app.get("/users",verify,async(req,res)=> {
