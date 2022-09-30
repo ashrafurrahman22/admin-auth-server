@@ -51,9 +51,9 @@ const run = async()=> {
         }
 
         const result = await userCollection.updateOne(query,docs,options)
-        const token = jwt.sign({ email:email }, process.env.JWT_SECRET);
+        const token = jwt.sign({ email:email }, `${process.env.JWT_SECRET}`);
         console.log(result);
-        res.send({result, token})
+        res.send({result, token});
     })
 
     app.get("/users",verify,async(req,res)=> {
@@ -64,7 +64,7 @@ const run = async()=> {
         const email = req.params.email
         const query = {email:email}
         const data = await userCollection.findOne(query)
-        const isAdmin = data.role === "admin"
+        const isAdmin = data?.role === "admin"
         res.send({admin:isAdmin,data:data})
     })
 
