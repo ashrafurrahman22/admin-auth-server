@@ -1,5 +1,6 @@
 const express = require("express")
 const cors = require("cors")
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const { application } = require("express")
 require("dotenv").config()
 const jwt = require("jsonwebtoken")
@@ -11,11 +12,9 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 app.use(cors())
 app.use(express.json())
 
-
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.ruqu1o2.mongodb.net/?retryWrites=true&w=majority`;
+// mongodb
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.kk65eln.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-
 
 
 const run = async()=> {
@@ -56,10 +55,15 @@ const run = async()=> {
         res.send({result, token});
     })
 
-    app.get("/users",verify,async(req,res)=> {
+    // app.get("/users",verify,async(req,res)=> {
+    //     const data = await userCollection.find().toArray()
+    //     res.send(data)
+    // })
+    app.get("/users",async(req,res)=> {
         const data = await userCollection.find().toArray()
         res.send(data)
     })
+
     app.get("/users/:email",verify,async(req,res)=> {
         const email = req.params.email
         const query = {email:email}
@@ -82,8 +86,7 @@ const run = async()=> {
     app.delete("/users/:id",verify,verifyAdmin,async(req,res)=> {
         const id = req.params.id
         const result = await userCollection.deleteOne({_id:ObjectId(id)})
-        res.send(result)
-        
+        res.send(result) 
     })
 
     app.put("/maketoken/:email",(req,res)=> {
